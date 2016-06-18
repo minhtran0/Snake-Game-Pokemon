@@ -7,7 +7,10 @@ ArrayList movement;
 int AppleX, AppleY;
 String AppleImg;
 String[][] direction = new String[20][20];
+int[] wallX, wallY;
+
 int addSize = 1.5;
+boolean allowPassThroughEdge = true;
 
 SnakeList head;
 SnakeList tail;
@@ -22,6 +25,8 @@ void setup() {
 
 void init() {
 	movement = new ArrayList();
+	wallX = new int[4];
+	wallY = new int[4];
 	score = 0;
 
 	head = new SnakeList(10, 10, "RIGHT", "0.png", null);
@@ -41,6 +46,7 @@ void init() {
 	direction[7][10] = "RIGHT";
 	tail = n4;
 
+	generateWalls();
 	generateApple();
 }
 
@@ -56,9 +62,25 @@ void generateApple() {
 			}
 			current = current.next;
 		}
+		for (int i = 0; i < wallX.length; i++) {
+			if (AppleX == wallX[i] && AppleY == wallY[i]) {
+				continue outloop;
+			}
+		}
 		break;
 	}
 	AppleImg = str(int(random() * 16) + 1) + ".png";
+}
+
+void generateWalls() {
+	wallX[0] = int(random() * 10);
+	wallY[0] = int(random() * 10);
+	wallX[1] = int(random() * 10) + 10;
+	wallY[1] = int(random() * 10);
+	wallX[2] = int(random() * 10);
+	wallY[2] = int(random() * 9) + 11;
+	wallX[3] = int(random() * 10) + 10;
+	wallY[3] = int(random() * 9) + 11;
 }
 
 class SnakeList {
@@ -71,10 +93,17 @@ class SnakeList {
 	}
 
 	void checkEdges() {
-		if (x > 19)		x = 0;
-		if (x < 0)		x = 19;
-		if (y > 19)		y = 0;
-		if (y < 0)		y = 19;
+		if (allowPassThroughEdge) {
+			if (x > 19)		x = 0;
+			if (x < 0)		x = 19;
+			if (y > 19)		y = 0;
+			if (y < 0)		y = 19;
+		}
+		else {
+			if (x > 19 || x < 0 || y > 19 || y < 0) {
+				stage = 3;
+			}
+		}
 	}
 }
 
@@ -122,6 +151,11 @@ void checkCollisions() {
 			stage = 3;
 		}
 		current = current.next;
+	}
+	for (int i = 0; i < wallX.length; i++) {
+		if (head.x == wallX[i] && head.y == wallY[i]) {
+			stage = 3;
+		}
 	}
 
 	if (head.x == AppleX && head.y == AppleY) {
@@ -186,6 +220,13 @@ void drawGameBackground() {
 		line(0, y, width, y);
 	}
 
+	// Draw walls
+	fill(224,142,121);
+	noStroke();
+	for (int i = 0; i < wallX.length; i++) {
+		rect(wallX[i]*dx + 3, wallY[i]*dy + 3, 30 - 2*3, 30 - 2*3);
+	}
+
 	// Draw orb around apple
 	fill(255, 255, 255, 255 * 1/12);
 	stroke(255, 255, 255, 255 * 1/3);
@@ -203,10 +244,20 @@ void drawStartScreen() {
 	text("easy", 230, 350);
 	text("medium", 200, 420);
 	text("hard", 230, 490);
+
+	// Draw eye
+	noStroke();
+	fill(255);
+	ellipse(150, 102, 20, 20);
+	fill(0);
+	PVector locEye = new PVector(mouseX-150, mouseY-102);
+	locEye.limit(6);
+	ellipse(locEye.x + 150, locEye.y + 102, 5, 5);
 }
 
 void drawEndScreen() {
-	background(84,36,55);
+	fill(84,36,55, 255 * 9/10);
+	rect(0, 0, 600, 600);
 
 	textFont("sans-serif", 30);
 	fill(217,91,67);
@@ -239,7 +290,7 @@ void mouseClicked() {
 			stage = 2;
 		}
 	}
-	else if (stage == 3) {
+	else if (stage == 0) {
 		stage = 1;
 	}
 }
@@ -249,11 +300,12 @@ void draw() {
 		init();
 		drawStartScreen();
 	}
-	if (stage == 2) {
+	else if (stage == 2) {
 		drawGameBackground();
 		renderSnake();
 	}
-	if (stage == 3) {
+	else if (stage == 3) {
+		stage = 0;
 		drawEndScreen();
 	}
 }
