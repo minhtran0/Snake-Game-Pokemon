@@ -7,7 +7,7 @@ ArrayList movement;
 int AppleX, AppleY;
 String AppleImg;
 String[][] direction = new String[20][20];
-int addSize = 2;
+int addSize = 1.5;
 
 SnakeList head;
 SnakeList tail;
