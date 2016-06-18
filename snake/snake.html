@@ -6,9 +6,23 @@
 		body {
 			text-align: center;
 		}
+		#load {
+			text-align: center;
+			font-size: 40px;
+			font-family: cursive;
+			color: rgb(84,36,55);
+			position: relative;
+			top: 250px;
+			z-index: -1;
+		}
+		#canvas {
+			z-index: 1;
+			background-color: white;
+		}
 	</style>
 </head>
 <body>
+	<div id="load">Loading ...</div>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.16/processing.min.js"></script>
 	<canvas id="canvas" data-processing-sources="snake.pde"></canvas>
 </body>

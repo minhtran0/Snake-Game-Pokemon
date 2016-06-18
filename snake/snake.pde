@@ -16,11 +16,6 @@ void setup() {
 	size(width, height);
 	frameRate(30);
 
-	background(255);
-	fill(84,36,55);
-	textFont("sans-serif", 60);
-	text("Loading ...", 180, 330);
-
 	// Loads images
 	loadImg();
 }
