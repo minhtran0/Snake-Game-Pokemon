@@ -3,6 +3,7 @@ int dx = 30, dy = 30;
 int stage = 1;
 int score = 0;
 ArrayList movement;
+String difficulty;
 
 int AppleX, AppleY;
 String AppleImg;
@@ -130,7 +131,6 @@ void renderSnake() {
 		if (current.dir.equals("LEFT"))	current.x -= 1;
 		if (current.dir.equals("RIGHT"))	current.x += 1;
 
-		// Check edges
 		current.checkEdges();
 
 		image(loadImage(current.image), current.x*dx - addSize, current.y*dy - addSize, 30 + 2*addSize, 30 + 2*addSize);
@@ -138,8 +138,6 @@ void renderSnake() {
 		// Next vertex
 		current = current.next;
 	}
-
-	// Check collisions
 	checkCollisions();
 }
 
@@ -262,6 +260,9 @@ void drawEndScreen() {
 	textFont("sans-serif", 30);
 	fill(217,91,67);
 	text("score:", 200, 170);
+	text("on", 420, 280);
+	text(difficulty.toLowerCase(), 420, 320);
+	text("mode", 420, 360);
 
 	textFont("sans-serif", 200);
 	fill(236,208,120);
@@ -278,15 +279,18 @@ void drawEndScreen() {
 void mouseClicked() {
 	if (stage == 1) {
 		if (mouseX > 222 && mouseY > 316 && mouseX < 340 && mouseY < 354) {
-			frameRate(15);
+			difficulty = "EASY";
+			frameRate(10);
 			stage = 2;
 		}
 		else if (mouseX > 196 && mouseY > 381 && mouseX < 382 && mouseY < 426) {
-			frameRate(20);
+			difficulty = "MEDIUM";
+			frameRate(15);
 			stage = 2;
 		}
 		else if (mouseX > 217 && mouseY > 449 && mouseX < 333 && mouseY < 492) {
-			frameRate(25);
+			difficulty = "HARD";
+			frameRate(20);
 			stage = 2;
 		}
 	}
