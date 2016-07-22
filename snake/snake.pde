@@ -274,6 +274,8 @@ void drawEndScreen() {
 	fill(217,91,67);
 	textFont("sans-serif", 24);
 	text("click anywhere to play again", 140, 500);
+	textFont("sans-serif", 16);
+	text("Clone by Minh Tran", 10, 590);
 }
 
 void mouseClicked() {
